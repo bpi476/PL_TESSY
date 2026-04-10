@@ -1,103 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>Pricelist</title>
+<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricelist</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 10px;
-      font-size: 14px;
-      background: #f9f9f9;
-    }
-
-    h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    /* MENU */
-    #menu {
-      display: flex;
-      overflow-x: auto;
-      gap: 8px;
-      padding-bottom: 5px;
-    }
-
-    #menu button {
-      flex: 0 0 auto;
-      padding: 10px 14px;
-      border: none;
-      background: #007bff;
-      color: white;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    #menu button.active {
-      background: #28a745;
-    }
-
-    /* SEARCH */
-    #search {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    /* TABLE */
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      min-width: 500px;
-      background: white;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: left;
-      font-size: 13px;
-    }
-
-    th {
-      background: #eee;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    tr:nth-child(even) {
-      background: #fafafa;
-    }
-
-    td:nth-child(3) {
-      font-weight: bold;
-      color: #007b00;
-    }
-
-    @media (max-width: 480px) {
-      th, td {
-        padding: 8px;
-      }
-
-      #menu button {
-        font-size: 13px;
-        padding: 8px 12px;
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -106,25 +14,24 @@
 <h3 class="warning">Jangan Share Link!!! cukup screenshot</h3>
 
 <div id="menu">Loading menu...</div>
-
 <input type="text" id="search" placeholder="Cari produk...">
 
 <div class="table-wrapper">
-  <table>
-    <thead>
-      <tr>
-        <th>Produk</th>
-        <th>Tebal</th>
-        <th>Harga</th>
-        <th>Satuan</th>
-      </tr>
-    </thead>
-    <tbody id="tabel"></tbody>
-  </table>
+<table>
+<thead>
+<tr>
+<th>Produk</th>
+<th>Tebal</th>
+<th>Harga</th>
+<th>Satuan</th>
+</tr>
+</thead>
+<tbody id="tabel"></tbody>
+</table>
 </div>
 
 <script>
-  // ===== LOGIN (LETakkan DI SINI) =====
+// ===== LOGIN =====
 const users = [
   { username: "admin", password: "12345" },
   { username: "sales", password: "mustopa" }
@@ -137,22 +44,17 @@ function checkLogin() {
 }
 
 function showLogin() {
+  document.body.classList.add("lock");
+
   const div = document.createElement("div");
   div.id = "loginBox";
-  div.style = `
-    position:fixed;top:0;left:0;width:100%;height:100%;
-    background:#000000aa;display:flex;justify-content:center;
-    align-items:center;z-index:9999;
-  `;
 
   div.innerHTML = `
-    <div style="background:#fff;padding:20px;border-radius:10px;width:260px">
+    <div class="login-card">
       <h3>Login</h3>
-      <input id="user" placeholder="Username" style="width:80%;padding:8px;margin-bottom:8px">
-      <input id="pass" type="password" placeholder="Password" style="width:80%;padding:8px;margin-bottom:10px">
-      <button onclick="login()" style="width:100%;padding:10px;background:#007bff;color:#fff;border:none;border-radius:6px">
-        Masuk
-      </button>
+      <input id="user" placeholder="Username">
+      <input id="pass" type="password" placeholder="Password">
+      <button onclick="login()">Masuk</button>
     </div>
   `;
 
@@ -167,77 +69,64 @@ function login() {
 
   if (found) {
     localStorage.setItem("login", "true");
-    localStorage.setItem("username", u);
+    document.body.classList.remove("lock");
     document.getElementById("loginBox").remove();
   } else {
-    alert("Salah");
+    alert("Username / Password salah");
   }
 }
 
-function logout() {
-  localStorage.clear();
-  location.reload();
-}
-
-// jalankan login check
 checkLogin();
 
-
-// ===== SCRIPT ASLI KAMU (BIARKAN DI BAWAH) =====
+// ===== DATA =====
 const sheetID = "1m-MFmrKUysTBYDmXAP5JqZoChLIa0Rd99d4nO1yH6RE";
 let currentData = [];
 
 // MENU
 fetch(`https://opensheet.elk.sh/${sheetID}/kategori`)
-  .then(res => res.json())
-  .then(data => {
-    let menuHTML = "";
+.then(res => res.json())
+.then(data => {
+  let html = "";
 
-    data.forEach(item => {
-      menuHTML += `<button onclick="loadSheet('${item.nama_sheet}', this)">
-        ${item.label}
-      </button>`;
-    });
-
-    document.getElementById("menu").innerHTML = menuHTML;
-
-    if (data.length > 0) {
-      loadSheet(data[0].nama_sheet);
-    }
-  })
-  .catch(() => {
-    document.getElementById("menu").innerHTML = "Gagal load menu";
+  data.forEach(item => {
+    html += `<button onclick="loadSheet('${item.nama_sheet}', this)">
+      ${item.label}
+    </button>`;
   });
 
-// LOAD DATA
-function loadSheet(namaSheet, btn) {
+  document.getElementById("menu").innerHTML = html;
+
+  if (data.length > 0) {
+    loadSheet(data[0].nama_sheet);
+  }
+});
+
+// LOAD
+function loadSheet(nama, btn) {
   document.getElementById("tabel").innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
 
-  // tombol aktif
   if (btn) {
     document.querySelectorAll("#menu button").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
   }
 
-  fetch(`https://opensheet.elk.sh/${sheetID}/${namaSheet}`)
-    .then(res => res.json())
-    .then(data => {
-      currentData = data;
-      tampilkan(data);
-    })
-    .catch(() => {
-      document.getElementById("tabel").innerHTML = "<tr><td colspan='4'>Gagal load data</td></tr>";
-    });
+  fetch(`https://opensheet.elk.sh/${sheetID}/${nama}`)
+  .then(res => res.json())
+  .then(data => {
+    currentData = data;
+    tampilkan(data);
+  })
+  .catch(() => {
+    document.getElementById("tabel").innerHTML = "<tr><td colspan='4'>Gagal load</td></tr>";
+  });
 }
 
-// DETEKSI KOLOM OTOMATIS
-function getValue(item, keywords) {
-  for (let key in item) {
-    let cleanKey = key.toLowerCase().trim();
-    for (let k of keywords) {
-      if (cleanKey.includes(k)) {
-        return item[key];
-      }
+// AUTO KOLOM
+function getVal(item, keys) {
+  for (let k in item) {
+    let key = k.toLowerCase();
+    for (let x of keys) {
+      if (key.includes(x)) return item[k];
     }
   }
   return "";
@@ -247,42 +136,32 @@ function getValue(item, keywords) {
 function tampilkan(data) {
   let html = "";
 
-  if (!data || data.length === 0) {
-    html = "<tr><td colspan='4'>Data kosong</td></tr>";
-  } else {
-    data.forEach(item => {
-      let produk = getValue(item, ["produk", "nama"]);
-      let tebal  = getValue(item, ["tebal", "ukuran"]);
-      let harga  = getValue(item, ["harga"]);
-      let satuan = getValue(item, ["satuan"]);
+  data.forEach(i => {
+    html += `<tr>
+      <td>${getVal(i, ["produk","nama"])}</td>
+      <td>${getVal(i, ["tebal","ukuran"])}</td>
+      <td>${formatRupiah(getVal(i, ["harga"]))}</td>
+      <td>${getVal(i, ["satuan"])}</td>
+    </tr>`;
+  });
 
-      html += `<tr>
-        <td>${produk}</td>
-        <td>${tebal}</td>
-        <td>${formatRupiah(harga)}</td>
-        <td>${satuan}</td>
-      </tr>`;
-    });
-  }
-
-  document.getElementById("tabel").innerHTML = html;
+  document.getElementById("tabel").innerHTML = html || "<tr><td colspan='4'>Kosong</td></tr>";
 }
 
-// FORMAT RUPIAH
-function formatRupiah(angka) {
-  if (!angka) return "";
-  angka = String(angka).replace(/[^0-9]/g, "");
-  return Number(angka).toLocaleString("id-ID");
+// FORMAT
+function formatRupiah(a) {
+  if (!a) return "";
+  a = String(a).replace(/[^0-9]/g, "");
+  return Number(a).toLocaleString("id-ID");
 }
 
 // SEARCH
 document.getElementById("search").addEventListener("keyup", function() {
-  let keyword = this.value.toLowerCase();
+  let k = this.value.toLowerCase();
 
-  let hasil = currentData.filter(item => {
-    let produk = getValue(item, ["produk", "nama"]).toLowerCase();
-    return produk.includes(keyword);
-  });
+  let hasil = currentData.filter(i =>
+    getVal(i, ["produk","nama"]).toLowerCase().includes(k)
+  );
 
   tampilkan(hasil);
 });
@@ -290,4 +169,3 @@ document.getElementById("search").addEventListener("keyup", function() {
 
 </body>
 </html>
-
