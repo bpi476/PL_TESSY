@@ -99,7 +99,61 @@
     }
   </style>
 </head>
+<script>
+// ===== DATA USER =====
+const users = [
+  { username: "admin", password: "12345" },
+  { username: "sales", password: "67890" }
+];
 
+// ===== CEK LOGIN =====
+function checkLogin() {
+  const isLogin = localStorage.getItem("login");
+
+  if (isLogin !== "true") {
+    showLogin();
+  }
+}
+
+// ===== TAMPILKAN FORM LOGIN =====
+function showLogin() {
+  document.body.innerHTML = `
+    <div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial">
+      <div style="background:#fff;padding:20px;border-radius:10px;width:250px;box-shadow:0 0 10px rgba(0,0,0,0.1)">
+        <h3 style="margin-bottom:10px">Login</h3>
+        <input id="user" placeholder="Username" style="width:100%;padding:8px;margin-bottom:8px">
+        <input id="pass" type="password" placeholder="Password" style="width:100%;padding:8px;margin-bottom:10px">
+        <button onclick="login()" style="width:100%;padding:10px;background:#007bff;color:#fff;border:none;border-radius:6px">Masuk</button>
+      </div>
+    </div>
+  `;
+}
+
+// ===== PROSES LOGIN =====
+function login() {
+  const u = document.getElementById("user").value;
+  const p = document.getElementById("pass").value;
+
+  const found = users.find(x => x.username === u && x.password === p);
+
+  if (found) {
+    localStorage.setItem("login", "true");
+    localStorage.setItem("username", u);
+    location.reload();
+  } else {
+    alert("Username / Password salah");
+  }
+}
+
+// ===== LOGOUT =====
+function logout() {
+  localStorage.clear();
+  location.reload();
+}
+
+// JALANKAN
+checkLogin();
+</script>
 <body>
 
 <h1>PLnya TESSY</h1>
