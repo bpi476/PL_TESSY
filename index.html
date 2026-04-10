@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +9,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    
     body {
       font-family: Arial, sans-serif;
       margin: 10px;
@@ -193,7 +193,7 @@ function tampilkan(data) {
   } else {
     data.forEach(item => {
       let produk = getValue(item, ["produk", "nama"]);
-      let tebal  = getValue(item, ["ukuran", "ukuran"]);
+      let ukuran  = getValue(item, ["ukuran", "ukuran"]);
       let harga  = getValue(item, ["harga"]);
       let satuan = getValue(item, ["satuan"]);
 
@@ -231,4 +231,3 @@ document.getElementById("search").addEventListener("keyup", function() {
 
 </body>
 </html>
-
