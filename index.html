@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -115,7 +114,7 @@
     <thead>
       <tr>
         <th>Produk</th>
-        <th>Ukuran</th>
+        <th>Tebal</th>
         <th>Harga</th>
         <th>Satuan</th>
       </tr>
@@ -193,13 +192,13 @@ function tampilkan(data) {
   } else {
     data.forEach(item => {
       let produk = getValue(item, ["produk", "nama"]);
-      let ukuran  = getValue(item, ["ukuran", "ukuran"]);
+      let tebal  = getValue(item, ["tebal", "ukuran"]);
       let harga  = getValue(item, ["harga"]);
       let satuan = getValue(item, ["satuan"]);
 
       html += `<tr>
         <td>${produk}</td>
-        <td>${ukuran}</td>
+        <td>${tebal}</td>
         <td>${formatRupiah(harga)}</td>
         <td>${satuan}</td>
       </tr>`;
@@ -231,3 +230,4 @@ document.getElementById("search").addEventListener("keyup", function() {
 
 </body>
 </html>
+
