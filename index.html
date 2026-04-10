@@ -192,13 +192,13 @@ function tampilkan(data) {
   } else {
     data.forEach(item => {
       let produk = getValue(item, ["produk", "nama"]);
-      let tebal  = getValue(item, ["tebal", "ukuran"]);
+      let tebal  = getValue(item, ["ukuran", "ukuran"]);
       let harga  = getValue(item, ["harga"]);
       let satuan = getValue(item, ["satuan"]);
 
       html += `<tr>
         <td>${produk}</td>
-        <td>${tebal}</td>
+        <td>${ukuran}</td>
         <td>${formatRupiah(harga)}</td>
         <td>${satuan}</td>
       </tr>`;
