@@ -101,7 +101,7 @@ td:nth-child(4) { width: 15%; }
 
 /* HOVER (optional tapi enak) */
 tr:hover {
-  background: #f9fbff;
+  background: ##00FFFF;
 }
 /* ===== LOGIN FULL LAYAR ===== */
 #loginBox {
