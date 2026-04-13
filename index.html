@@ -139,7 +139,7 @@ function tampilkan(data) {
   data.forEach(i => {
     html += `<tr>
       <td>${getVal(i, ["produk","nama"])}</td>
-      <td>${getVal(i, ["tebal","ukuran"])}</td>
+      <td>${getVal(i, ["ukuran","ukuran"])}</td>
       <td>${formatRupiah(getVal(i, ["harga"]))}</td>
       <td>${getVal(i, ["satuan"])}</td>
     </tr>`;
