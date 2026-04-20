@@ -100,16 +100,10 @@ th, td {
 }
 
 th {
-  background: #f1f3f4;
-  font-size: 12px;
-  color: #666;
-  text-transform: uppercase;
-
   position: sticky;
-  top: 0;
+  top: 130px; /* SESUAI TOTAL HEADER ATAS */
   z-index: 10;
-
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background: #f1f3f4;
 }
 
 tr {
