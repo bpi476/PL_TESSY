@@ -20,11 +20,28 @@ h1 {
 }
 
 h3.warning {
-  color: #d93025;
-  text-align: center;
-  margin: 5px 0 10px;
-}
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 
+  text-align: center;
+  font-size: 11px;       /* lebih kecil */
+  color: #d93025;
+
+  background: #fff;
+  padding: 6px 0;
+  margin: 0;
+
+  z-index: 999;
+  
+  animation: blink 1s infinite;
+}
+@keyframes blink {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.2; }
+  100% { opacity: 1; }
+}
 /* ===== MENU ===== */
 #menu {
   position: sticky;
@@ -191,4 +208,8 @@ body.lock > *:not(#loginBox) {
 
 body.lock {
   overflow: hidden;
+}
+
+body {
+  padding-bottom: 30px;
 }
