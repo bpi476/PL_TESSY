@@ -10,8 +10,10 @@ body {
 
 /* ===== TITLE ===== */
 h1 {
-  font-size: 18px;
-  margin: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #f4f6f8;
 }
 
 h3.warning {
@@ -22,11 +24,12 @@ h3.warning {
 
 /* ===== MENU ===== */
 #menu {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 0 10px 5px;
+  position: sticky;
+  top: 40px;
+  z-index: 25;
+  background: #f4f6f8;
 }
+
 
 #menu button {
   flex: 0 0 auto;
@@ -46,12 +49,10 @@ h3.warning {
 
 /* ===== SEARCH ===== */
 #search {
-  width: calc(100% - 20px);
-  margin: 10px;
-  padding: 10px;
-  border-radius: 20px;
-  border: 1px solid #ddd;
-  outline: none;
+  position: sticky;
+  top: 80px;
+  z-index: 20;
+  background: #f4f6f8;
 }
 
 /* ===== TABLE ===== */
