@@ -14,6 +14,9 @@ h1 {
   top: 0;
   z-index: 30;
   background: #f4f6f8;
+
+  text-align: center; /* center */
+  margin: 10px 0;
 }
 
 h3.warning {
@@ -28,8 +31,12 @@ h3.warning {
   top: 40px;
   z-index: 25;
   background: #f4f6f8;
-}
 
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 5px 10px;
+}
 
 #menu button {
   flex: 0 0 auto;
@@ -47,13 +54,30 @@ h3.warning {
   border: none;
 }
 
-/* ===== SEARCH ===== */
+/* ===== SEARCH (ROUNDED + STICKY) ===== */
 #search {
   position: sticky;
   top: 80px;
   z-index: 20;
-  background: #f4f6f8;
 
+  width: calc(100% - 20px);
+  margin: 10px;
+
+  padding: 12px 16px;
+  border-radius: 999px; /* FULL BULAT */
+  border: 1px solid #ddd;
+
+  font-size: 14px;
+  outline: none;
+
+  background: #fff;
+}
+
+/* efek focus biar lebih modern */
+#search:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
+}
 
 /* ===== TABLE ===== */
 .table-wrapper {
@@ -80,9 +104,11 @@ th {
   font-size: 12px;
   color: #666;
   text-transform: uppercase;
+
   position: sticky;
   top: 0;
   z-index: 10;
+
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
@@ -94,21 +120,17 @@ tr:last-child {
   border-bottom: none;
 }
 
-/* ===== KOLOM DINAMIS ===== */
-
-/* PRODUK (ambil sisa ruang terbesar) */
+/* ===== KOLOM ===== */
 td:nth-child(1) {
   width: 50%;
   font-weight: 600;
   color: #000;
 }
 
-/* TEBAL */
 td:nth-child(2) {
   text-align: center;
 }
 
-/* HARGA (jangan pecah baris) */
 td:nth-child(3) {
   white-space: nowrap;
   text-align: right;
@@ -116,7 +138,6 @@ td:nth-child(3) {
   color: #0a7d2c;
 }
 
-/* SATUAN */
 td:nth-child(4) {
   text-align: center;
 }
@@ -125,7 +146,7 @@ tr:hover {
   background: #eef7ff;
 }
 
-/* ===== LOGIN FULL ===== */
+/* ===== LOGIN ===== */
 #loginBox {
   position: fixed;
   top: 0;
@@ -139,7 +160,6 @@ tr:hover {
   z-index: 99999;
 }
 
-/* LOGIN CARD */
 .login-card {
   width: 260px;
   padding: 20px;
