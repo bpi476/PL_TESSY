@@ -213,3 +213,52 @@ body.lock {
 body {
   padding-bottom: 30px;
 }
+
+
+/* =========================================================
+   TAMBAHAN KHUSUS UNTUK TAMPILAN LAPTOP / DESKTOP
+   (Tempel di bagian paling bawah file style.css)
+   ========================================================= */
+@media screen and (min-width: 768px) {
+  
+  /* 1. Membuat wrapper tabel berada di tengah layar laptop */
+  .table-wrapper {
+    display: flex;
+    justify-content: center;
+    background: transparent; /* Menghilangkan background putih wrapper agar menyatu */
+    margin: 20px auto 40px;
+    max-width: 1000px;
+  }
+
+  /* 2. Mengatur ukuran tabel di desktop agar tidak melar penuh */
+  table {
+    width: auto; /* Lebar otomatis mengikuti panjang isi teks */
+    min-width: 700px; /* Lebar minimal tabel di laptop biar ideal */
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Efek bayangan halus */
+    overflow: hidden;
+  }
+
+  /* 3. Menghapus paksaan lebar 50% kolom produk khusus di laptop */
+  td:nth-child(1) {
+    width: auto; 
+    text-align: center; /* Membuat teks Produk berada di tengah */
+  }
+
+  /* 4. Membuat semua isi kolom (Ukuran, Harga, Satuan) rata tengah */
+  th, td {
+    padding: 12px 30px; /* Jarak antar kolom lebih longgar dan lega */
+    font-size: 14px;
+  }
+
+  th {
+    text-align: center; /* Judul kolom di tengah */
+  }
+
+  td:nth-child(2), 
+  td:nth-child(3), 
+  td:nth-child(4) {
+    text-align: center; /* Mengubah harga yang tadinya rata kanan jadi rata tengah */
+  }
+}
