@@ -216,37 +216,57 @@ body {
 
 
 /* =========================================================
-   TAMBAHAN KHUSUS UNTUK TAMPILAN LAPTOP / DESKTOP
+   TAMBAHAN UTK DESKTOP (MENU, SEARCH, & TABEL JADI DI TENGAH)
    (Tempel di bagian paling bawah file style.css)
    ========================================================= */
 @media screen and (min-width: 768px) {
   
-  /* 1. Membuat wrapper tabel berada di tengah layar laptop */
+  /* 1. Mengatur Judul, Menu, dan Kolom Search agar lebarnya pas di tengah */
+  h1, #menu, #search {
+    max-width: 800px; /* Membatasi lebar maksimal */
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* 2. Merapikan barisan tombol menu di desktop */
+  #menu {
+    justify-content: center; /* Membuat tombol menu ngumpul di tengah */
+    overflow-x: visible;     /* Di laptop tidak perlu scroll kanan-kiri lagi */
+    flex-wrap: wrap;         /* Kalau menu terlalu banyak, otomatis turun ke bawahnya */
+    padding: 10px 0;
+  }
+
+  /* 3. Menyesuaikan lebar kolom pencarian biar pas */
+  #search {
+    width: calc(100% - 40px); /* Memberi sedikit jarak manis di kanan-kiri */
+  }
+
+  /* 4. Membuat wrapper tabel berada di tengah layar laptop */
   .table-wrapper {
     display: flex;
     justify-content: center;
-    background: transparent; /* Menghilangkan background putih wrapper agar menyatu */
+    background: transparent; /* Menghilangkan background putih wrapper bawaan HP */
     margin: 20px auto 40px;
     max-width: 1000px;
   }
 
-  /* 2. Mengatur ukuran tabel di desktop agar tidak melar penuh */
+  /* 5. Mengatur ukuran tabel di desktop agar tidak melar penuh */
   table {
     width: auto; /* Lebar otomatis mengikuti panjang isi teks */
-    min-width: 700px; /* Lebar minimal tabel di laptop biar ideal */
+    min-width: 750px; /* Lebar minimal tabel di laptop biar ideal */
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Efek bayangan halus */
     overflow: hidden;
   }
 
-  /* 3. Menghapus paksaan lebar 50% kolom produk khusus di laptop */
+  /* 6. Menghapus paksaan lebar 50% kolom produk khusus di laptop */
   td:nth-child(1) {
     width: auto; 
     text-align: center; /* Membuat teks Produk berada di tengah */
   }
 
-  /* 4. Membuat semua isi kolom (Ukuran, Harga, Satuan) rata tengah */
+  /* 7. Membuat semua isi kolom (Ukuran, Harga, Satuan) rata tengah */
   th, td {
     padding: 12px 30px; /* Jarak antar kolom lebih longgar dan lega */
     font-size: 14px;
