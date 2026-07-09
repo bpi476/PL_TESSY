@@ -6,7 +6,6 @@ body {
   font-family: Arial, sans-serif;
   font-size: 14px;
   background: #f4f6f8;
-  padding-bottom: 30px;
 }
 
 /* ===== TITLE ===== */
@@ -15,7 +14,8 @@ h1 {
   top: 0;
   z-index: 30;
   background: #f4f6f8;
-  text-align: center;
+
+  text-align: center; /* center */
   margin: 10px 0;
 }
 
@@ -24,13 +24,17 @@ h3.warning {
   bottom: 0;
   left: 0;
   width: 100%;
+
   text-align: center;
-  font-size: 11px;
+  font-size: 11px;       /* lebih kecil */
   color: #d93025;
+
   background: #fff;
   padding: 6px 0;
   margin: 0;
+
   z-index: 999;
+  
   animation: blink 1s infinite;
 }
 @keyframes blink {
@@ -38,13 +42,13 @@ h3.warning {
   50%  { opacity: 0.2; }
   100% { opacity: 1; }
 }
-
 /* ===== MENU ===== */
 #menu {
   position: sticky;
   top: 40px;
   z-index: 25;
   background: #f4f6f8;
+
   display: flex;
   gap: 8px;
   overflow-x: auto;
@@ -67,27 +71,32 @@ h3.warning {
   border: none;
 }
 
-/* ===== SEARCH ===== */
+/* ===== SEARCH (ROUNDED + STICKY) ===== */
 #search {
   position: sticky;
   top: 80px;
   z-index: 20;
+
   width: calc(100% - 20px);
   margin: 10px;
+
   padding: 12px 16px;
-  border-radius: 999px;
+  border-radius: 999px; /* FULL BULAT */
   border: 1px solid #ddd;
+
   font-size: 14px;
   outline: none;
+
   background: #fff;
 }
 
+/* efek focus biar lebih modern */
 #search:focus {
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
 }
 
-/* ===== TABLE (Tampilan Default / HP) ===== */
+/* ===== TABLE ===== */
 .table-wrapper {
   margin: 0 10px 15px;
   background: #fff;
@@ -109,7 +118,7 @@ th, td {
 
 th {
   position: sticky;
-  top: 130px;
+  top: 130px; /* SESUAI TOTAL HEADER ATAS */
   z-index: 10;
   background: #f1f3f4;
 }
@@ -122,22 +131,31 @@ tr:last-child {
   border-bottom: none;
 }
 
-/* Kolom HP */
+/* ===== KOLOM ===== */
 td:nth-child(1) {
   width: 50%;
   font-weight: 600;
   color: #000;
 }
-td:nth-child(2) { text-align: center; }
+
+td:nth-child(2) {
+  text-align: center;
+}
+
 td:nth-child(3) {
   white-space: nowrap;
   text-align: right;
   font-weight: bold;
   color: #0a7d2c;
 }
-td:nth-child(4) { text-align: center; }
 
-tr:hover { background: #eef7ff; }
+td:nth-child(4) {
+  text-align: center;
+}
+
+tr:hover {
+  background: #eef7ff;
+}
 
 /* ===== LOGIN ===== */
 #loginBox {
@@ -161,7 +179,10 @@ tr:hover { background: #eef7ff; }
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-.login-card h3 { margin-top: 0; }
+.login-card h3 {
+  margin-top: 0;
+}
+
 .login-card input {
   width: 100%;
   padding: 8px;
@@ -169,6 +190,7 @@ tr:hover { background: #eef7ff; }
   border: 1px solid #ddd;
   border-radius: 6px;
 }
+
 .login-card button {
   width: 100%;
   padding: 10px;
@@ -179,67 +201,64 @@ tr:hover { background: #eef7ff; }
   cursor: pointer;
 }
 
-body.lock > *:not(#loginBox) { display: none; }
-body.lock { overflow: hidden; }
+/* ===== LOCK ===== */
+body.lock > *:not(#loginBox) {
+  display: none;
+}
+
+body.lock {
+  overflow: hidden;
+}
+
+body {
+  padding-bottom: 30px;
+}
 
 
 /* =========================================================
-   PENGATURAN KHUSUS LAPTOP / DESKTOP (Layar > 768px)
+   TAMBAHAN KHUSUS UNTUK TAMPILAN LAPTOP / DESKTOP
+   (Tempel di bagian paling bawah file style.css)
    ========================================================= */
 @media screen and (min-width: 768px) {
   
-  /* Membikin Judul, Menu, dan Search Terkumpul di Tengah */
-  h1, #menu, #search {
-    max-width: 800px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-
-  #menu {
-    justify-content: center !important;
-    overflow-x: visible !important;
-    flex-wrap: wrap !important;
-    padding: 10px 0;
-  }
-
-  #search {
-    width: calc(100% - 40px) !important;
-  }
-
-  /* Membikin Kontainer Tabel Berada di Tengah */
+  /* 1. Membuat wrapper tabel berada di tengah layar laptop */
   .table-wrapper {
-    display: flex !important;
-    justify-content: center !important;
-    background: transparent !important; /* Menghapus background putih bawaan HP */
-    margin: 20px auto 40px !important;
-    max-width: 1000px !important;
-    padding: 0 !important;
+    display: flex;
+    justify-content: center;
+    background: transparent; /* Menghilangkan background putih wrapper agar menyatu */
+    margin: 20px auto 40px;
+    max-width: 1000px;
   }
 
-  /* Mengatur Tabel agar TIDAK MELEBAR (Width Auto) */
+  /* 2. Mengatur ukuran tabel di desktop agar tidak melar penuh */
   table {
-    width: auto !important; 
-    min-width: 750px !important; /* Lebar minimal tabel di laptop */
-    background: #fff !important;
-    border-radius: 10px !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
-    overflow: hidden !important;
+    width: auto; /* Lebar otomatis mengikuti panjang isi teks */
+    min-width: 700px; /* Lebar minimal tabel di laptop biar ideal */
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Efek bayangan halus */
+    overflow: hidden;
   }
 
-  /* Mengatur Kolom & Teks Kembali ke Tengah */
-  th, td {
-    padding: 12px 30px !important; /* Jarak kolom dibuat longgar */
-    font-size: 14px !important;
-    text-align: center !important; /* Semua teks default tengah */
-  }
-
-  /* Reset paksaan lebar 50% milik HP */
+  /* 3. Menghapus paksaan lebar 50% kolom produk khusus di laptop */
   td:nth-child(1) {
-    width: auto !important; 
-    text-align: center !important;
+    width: auto; 
+    text-align: center; /* Membuat teks Produk berada di tengah */
   }
 
-  td:nth-child(3) {
-    text-align: center !important; /* Harga jadi di tengah */
+  /* 4. Membuat semua isi kolom (Ukuran, Harga, Satuan) rata tengah */
+  th, td {
+    padding: 12px 30px; /* Jarak antar kolom lebih longgar dan lega */
+    font-size: 14px;
+  }
+
+  th {
+    text-align: center; /* Judul kolom di tengah */
+  }
+
+  td:nth-child(2), 
+  td:nth-child(3), 
+  td:nth-child(4) {
+    text-align: center; /* Mengubah harga yang tadinya rata kanan jadi rata tengah */
   }
 }
