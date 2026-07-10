@@ -22,20 +22,19 @@ h3.warning {
   width: 100%;
   text-align: center;
   font-size: 11px;
-  color: #d93025;
-  background: #ffffff;
+  background: #ffffff; /* Tetap putih solid, tidak akan ikut transparan */
   padding: 6px 0;
   margin: 0;
   z-index: 1000;
-  animation: blink 1s infinite;
-  /* Shadow ke bawah untuk menutup celah antara warning dan H1 */
   box-shadow: 0 5px 0 #ffffff; 
+  /* Animasi sekarang fokus mengubah warna teks saja */
+  animation: blink 1s infinite;
 }
 
 @keyframes blink {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.2; }
-  100% { opacity: 1; }
+  0%   { color: #d93025; }             /* Merah tegas */
+  50%  { color: rgba(217, 48, 37, 0.2); } /* Merah pudar (teksnya saja) */
+  100% { color: #d93025; }             /* Merah tegas kembali */
 }
 
 h1 {
