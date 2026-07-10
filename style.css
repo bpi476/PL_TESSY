@@ -1,20 +1,21 @@
 /* ===== GLOBAL ===== */
-* { box-sizing: border-box; }
+* { 
+  box-sizing: border-box; 
+}
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   font-size: 14px;
   background: #f4f6f8;
-  /* Tambahkan padding atas agar konten tabel tidak tertutup oleh header yang di-fixed */
+  /* Jarak atas agar isi tabel tidak tertutup header saat pertama dimuat */
   padding-top: 195px; 
   padding-bottom: 30px;
 }
 
-/* ===== CONTAINER HEADER FIXED ===== 
-   Kita bungkus atau buat elemen atas tetap solid di posisinya 
-================================== */
-
+/* ===== FIXED HEADER CONTAINER =====
+   Membuat seluruh komponen atas menyatu dan solid tanpa celah
+====================================== */
 h3.warning {
   position: fixed;
   top: 0;
@@ -26,7 +27,7 @@ h3.warning {
   background: #ffffff; /* Putih Solid */
   padding: 6px 0;
   margin: 0;
-  z-index: 1000; /* Paling atas */
+  z-index: 1000; /* Lapisan paling depan */
   animation: blink 1s infinite;
   border-bottom: 1px solid #eee;
 }
@@ -39,7 +40,7 @@ h3.warning {
 
 h1 {
   position: fixed;
-  top: 25px; /* Di bawah h3.warning */
+  top: 24px; /* Tepat di bawah h3.warning */
   left: 0;
   width: 100%;
   z-index: 990;
@@ -49,10 +50,9 @@ h1 {
   padding: 10px 0;
 }
 
-/* ===== MENU ===== */
 #menu {
   position: fixed;
-  top: 75px; /* Di bawah h1 */
+  top: 73px; /* Tepat di bawah h1 */
   left: 0;
   width: 100%;
   z-index: 980;
@@ -80,34 +80,35 @@ h1 {
   border: none;
 }
 
-/* ===== SEARCH ===== */
 #search {
   position: fixed;
-  top: 130px; /* Di bawah #menu */
-  left: 10px;
+  top: 128px; /* Tepat di bawah #menu */
+  left: 0;
+  width: 100%;
   z-index: 970;
-  width: calc(100% - 20px);
+  /* Menggunakan padding & border khusus agar kotak search tidak meluber keluar layar */
   margin: 0;
   padding: 12px 16px;
-  border-radius: 999px;
-  border: 1px solid #ddd;
+  border-radius: 0; /* Diubah ke kotak/sedikit rounded agar menutup penuh kanan kiri */
+  border: none;
+  border-bottom: 1px solid #ddd; 
   font-size: 14px;
   outline: none;
   background: #ffffff; /* Putih Solid */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sedikit shadow agar terpisah dari background aplikasi */
 }
 
 #search:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
+  background: #fdfdfd;
+  border-bottom: 1px solid #007bff;
 }
 
-/* ===== TABLE ===== */
+/* ===== TABLE AREA ===== */
 .table-wrapper {
-  margin: 0 10px 15px;
+  margin: 10px;
   background: #fff;
   border-radius: 10px;
   padding: 5px;
+  overflow: visible; /* Memastikan sticky th bekerja */
 }
 
 table {
@@ -117,16 +118,18 @@ table {
 }
 
 th, td {
-  padding: 8px;
+  padding: 10px 8px;
   font-size: 13px;
   word-break: break-word;
 }
 
 th {
   position: sticky;
-  top: 185px; /* Menyesuaikan batas bawah form search agar sticky tepat di bawahnya */
-  z-index: 90;
-  background: #f1f3f4;
+  top: 183px; /* Tepat di bawah batas bawah #search */
+  z-index: 900; /* Di bawah element fixed utama, tapi di atas isi tabel */
+  background: #f1f3f4; /* Warna background header tabel */
+  color: #333;
+  box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); /* Efek bayangan tipis saat di-scroll */
 }
 
 tr {
@@ -137,7 +140,11 @@ tr:last-child {
   border-bottom: none;
 }
 
-/* ===== KOLOM ===== */
+tr:hover {
+  background: #eef7ff;
+}
+
+/* ===== KOLOM FORMATTING ===== */
 td:nth-child(1) {
   width: 50%;
   font-weight: 600;
@@ -159,11 +166,7 @@ td:nth-child(4) {
   text-align: center;
 }
 
-tr:hover {
-  background: #eef7ff;
-}
-
-/* ===== LOGIN ===== */
+/* ===== LOGIN BOX (FULL SCREEN OVERLAY) ===== */
 #loginBox {
   position: fixed;
   top: 0;
@@ -174,7 +177,7 @@ tr:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 99999;
+  z-index: 99999; /* Lapisan absolut paling atas */
 }
 
 .login-card {
@@ -207,7 +210,7 @@ tr:hover {
   cursor: pointer;
 }
 
-/* ===== LOCK ===== */
+/* ===== LOCK SYSTEM ===== */
 body.lock > *:not(#loginBox) {
   display: none;
 }
