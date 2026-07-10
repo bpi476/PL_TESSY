@@ -64,13 +64,20 @@ const users = [
 ];
 
 function checkLogin() {
-  if (localStorage.getItem("login") !== "true") {
+  if (localStorage.getItem("login") === "true") {
+    // Jika sudah login, langsung jalankan fungsi ambil data
+    initApp();
+  } else {
     showLogin();
   }
 }
 
 function showLogin() {
   document.body.classList.add("lock");
+
+  // Sembunyikan kontainer utama secara aman agar tidak diintip sebelum login
+  const container = document.querySelector(".app-container");
+  if (container) container.style.visibility = "hidden";
 
   const div = document.createElement("div");
   div.id = "loginBox";
@@ -97,11 +104,37 @@ function login() {
     localStorage.setItem("login", "true");
     document.body.classList.remove("lock");
     document.getElementById("loginBox").remove();
+    
+    // Tampilkan kembali kontainer utama
+    const container = document.querySelector(".app-container");
+    if (container) container.style.visibility = "visible";
+    
+    // Jalankan aplikasi
+    initApp();
   } else {
     alert("Username / Password salah");
   }
 }
+// Bungkus pemicu data ke dalam satu fungsi utama
+function initApp() {
+  // Ambil data MENU KATEGORI yang sudah ada di kode Anda sebelumnya
+  fetch(`https://opensheet.elk.sh/${sheetID}/kategori`)
+  .then(res => res.json())
+  .then(data => {
+    let html = "";
+    data.forEach(item => {
+      html += `<button onclick="loadSheet('${item.nama_sheet}', this)">
+        ${item.label}
+      </button>`;
+    });
+    document.getElementById("menu").innerHTML = html;
+    if (data.length > 0) {
+      loadSheet(data[0].nama_sheet);
+    }
+  });
+}
 
+// Jalankan pengecekan login pertama kali saat halaman dibuka
 checkLogin();
 
 // ===== DATA =====
