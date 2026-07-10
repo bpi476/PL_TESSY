@@ -228,10 +228,6 @@ td:nth-child(4) {
 }
 
 /* ===== LOCK SYSTEM ===== */
-body.lock > *:not(#loginBox) {
-  display: none;
-}
-
 body.lock {
   overflow: hidden;
 }
