@@ -8,14 +8,13 @@ body {
   font-family: Arial, sans-serif;
   font-size: 14px;
   background: #f4f6f8;
-  /* Jarak atas agar isi tabel tidak tertutup header saat pertama dimuat */
+  /* Jarak pas agar isi tabel tidak tertutup total di awal */
   padding-top: 195px; 
   padding-bottom: 30px;
 }
 
-/* ===== FIXED HEADER CONTAINER =====
-   Membuat seluruh komponen atas menyatu dan solid tanpa celah
-====================================== */
+/* ===== FIXING ALL LEAKS (PENUTUP CELAH BOCOR) ===== */
+
 h3.warning {
   position: fixed;
   top: 0;
@@ -24,12 +23,13 @@ h3.warning {
   text-align: center;
   font-size: 11px;
   color: #d93025;
-  background: #ffffff; /* Putih Solid */
+  background: #ffffff;
   padding: 6px 0;
   margin: 0;
-  z-index: 1000; /* Lapisan paling depan */
+  z-index: 1000;
   animation: blink 1s infinite;
-  border-bottom: 1px solid #eee;
+  /* Shadow ke bawah untuk menutup celah antara warning dan H1 */
+  box-shadow: 0 5px 0 #ffffff; 
 }
 
 @keyframes blink {
@@ -40,28 +40,32 @@ h3.warning {
 
 h1 {
   position: fixed;
-  top: 24px; /* Tepat di bawah h3.warning */
+  top: 23px; 
   left: 0;
   width: 100%;
   z-index: 990;
-  background: #ffffff; /* Putih Solid */
+  background: #ffffff;
   text-align: center;
   margin: 0;
   padding: 10px 0;
+  /* Shadow atas bawah untuk membentengi area H1 */
+  box-shadow: 0 -5px 0 #ffffff, 0 5px 0 #ffffff;
 }
 
 #menu {
   position: fixed;
-  top: 73px; /* Tepat di bawah h1 */
+  top: 67px; 
   left: 0;
   width: 100%;
   z-index: 980;
-  background: #ffffff; /* Putih Solid */
+  background: #ffffff;
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 10px;
+  padding: 12px 10px; /* Dipertebal sedikit */
   margin: 0;
+  /* Menghilangkan celah ke bawah menuju searching */
+  box-shadow: 0 8px 0 #ffffff; 
 }
 
 #menu button {
@@ -82,33 +86,35 @@ h1 {
 
 #search {
   position: fixed;
-  top: 128px; /* Tepat di bawah #menu */
-  left: 0;
-  width: 100%;
+  top: 125px; 
+  left: 10px;
+  /* Lebar disesuaikan agar tetap rounded tapi dipaksa punya background block */
+  width: calc(100% - 20px);
   z-index: 970;
-  /* Menggunakan padding & border khusus agar kotak search tidak meluber keluar layar */
   margin: 0;
   padding: 12px 16px;
-  border-radius: 0; /* Diubah ke kotak/sedikit rounded agar menutup penuh kanan kiri */
-  border: none;
-  border-bottom: 1px solid #ddd; 
+  border-radius: 999px; /* Kembali bulat penuh sesuai request awal */
+  border: 1px solid #ddd;
   font-size: 14px;
   outline: none;
-  background: #ffffff; /* Putih Solid */
+  background: #ffffff;
+  /* TRICK: Gunakan shadow putih menyebar (spread) untuk memblokir celah di luar bulatan search */
+  box-shadow: 0 0 0 12px #ffffff; 
 }
 
 #search:focus {
-  background: #fdfdfd;
-  border-bottom: 1px solid #007bff;
+  border-color: #007bff;
+  /* Tetap mempertahankan tameng putih ditambah efek focus biru */
+  box-shadow: 0 0 0 12px #ffffff, 0 0 0 14px rgba(0,123,255,0.2);
 }
 
 /* ===== TABLE AREA ===== */
 .table-wrapper {
-  margin: 10px;
+  margin: 0 10px 15px;
   background: #fff;
   border-radius: 10px;
   padding: 5px;
-  overflow: visible; /* Memastikan sticky th bekerja */
+  overflow: visible; 
 }
 
 table {
@@ -125,11 +131,12 @@ th, td {
 
 th {
   position: sticky;
-  top: 183px; /* Tepat di bawah batas bawah #search */
-  z-index: 900; /* Di bawah element fixed utama, tapi di atas isi tabel */
-  background: #f1f3f4; /* Warna background header tabel */
+  /* Diturunkan pas ke posisi setelah benteng putih #search */
+  top: 178px; 
+  z-index: 900; 
+  background: #f1f3f4; 
   color: #333;
-  box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); /* Efek bayangan tipis saat di-scroll */
+  box-shadow: 0 2px 3px rgba(0,0,0,0.05);
 }
 
 tr {
@@ -166,7 +173,7 @@ td:nth-child(4) {
   text-align: center;
 }
 
-/* ===== LOGIN BOX (FULL SCREEN OVERLAY) ===== */
+/* ===== LOGIN BOX ===== */
 #loginBox {
   position: fixed;
   top: 0;
@@ -177,7 +184,7 @@ td:nth-child(4) {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 99999; /* Lapisan absolut paling atas */
+  z-index: 99999;
 }
 
 .login-card {
