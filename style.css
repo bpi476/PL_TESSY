@@ -1,220 +1,953 @@
-/* ===== GLOBAL ===== */
-* { box-sizing: border-box; }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  background: #f4f6f8;
+Percakapan dengan Gemini
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<link rel="stylesheet" href="style.css">
+
+  <link rel="shortcut icon" href="logo.jpg">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pricelist</title>
+
+
+
+
+
+</head>
+
+
+
+<body>
+
+
+
+<h1>PLnya TESSY</h1>
+
+<h3 class="warning">Jangan Share Link!!! cukup screenshot</h3>
+
+
+
+<div id="menu">Loading menu...</div>
+
+<input type="text" id="search" placeholder="Cari produk...">
+
+
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Produk</th>
+
+<th>Ukuran</th>
+
+<th>Harga</th>
+
+<th>Satuan</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tabel"></tbody>
+
+</table>
+
+</div>
+
+
+
+<script>
+
+// ===== LOGIN =====
+
+const users = [
+
+  { username: "admin", password: "12345" },
+
+  { username: "sales", password: "mustopa" },
+
+  { username: "salesDPJ", password: "ciamik123" }
+
+];
+
+
+
+function checkLogin() {
+
+  if (localStorage.getItem("login") !== "true") {
+
+    showLogin();
+
+  }
+
 }
 
-/* ===== TITLE ===== */
-h1 {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  background: #f4f6f8;
 
-  text-align: center; /* center */
-  margin: 10px 0;
+
+function showLogin() {
+
+  document.body.classList.add("lock");
+
+
+
+  const div = document.createElement("div");
+
+  div.id = "loginBox";
+
+
+
+  div.innerHTML = `
+
+    <div class="login-card">
+
+      <h3>Login</h3>
+
+      <input id="user" placeholder="Username">
+
+      <input id="pass" type="password" placeholder="Password">
+
+      <button onclick="login()">Masuk</button>
+
+    </div>
+
+  `;
+
+
+
+  document.body.appendChild(div);
+
 }
 
-h3.warning {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
 
-  text-align: center;
-  font-size: 11px;       /* lebih kecil */
-  color: #d93025;
 
-  background: #fff;
-  padding: 6px 0;
-  margin: 0;
+function login() {
 
-  z-index: 999;
-  
-  animation: blink 1s infinite;
-}
-@keyframes blink {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.2; }
-  100% { opacity: 1; }
-}
-/* ===== MENU ===== */
-#menu {
-  position: sticky;
-  top: 40px;
-  z-index: 25;
-  background: #f4f6f8;
+  const u = document.getElementById("user").value;
 
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 5px 10px;
+  const p = document.getElementById("pass").value;
+
+
+
+  const found = users.find(x => x.username === u && x.password === p);
+
+
+
+  if (found) {
+
+    localStorage.setItem("login", "true");
+
+    document.body.classList.remove("lock");
+
+    document.getElementById("loginBox").remove();
+
+  } else {
+
+    alert("Username / Password salah");
+
+  }
+
 }
 
-#menu button {
-  flex: 0 0 auto;
-  padding: 8px 14px;
-  border: 1px solid #ddd;
-  background: #fff;
-  border-radius: 20px;
-  font-size: 13px;
-  cursor: pointer;
+
+
+checkLogin();
+
+
+
+// ===== DATA =====
+
+const sheetID = "1m-MFmrKUysTBYDmXAP5JqZoChLIa0Rd99d4nO1yH6RE";
+
+let currentData = [];
+
+
+
+// MENU
+
+fetch(`https://opensheet.elk.sh/${sheetID}/kategori`)
+
+.then(res => res.json())
+
+.then(data => {
+
+  let html = "";
+
+
+
+  data.forEach(item => {
+
+    html += `<button onclick="loadSheet('${item.nama_sheet}', this)">
+
+      ${item.label}
+
+    </button>`;
+
+  });
+
+
+
+  document.getElementById("menu").innerHTML = html;
+
+
+
+  if (data.length > 0) {
+
+    loadSheet(data[0].nama_sheet);
+
+  }
+
+});
+
+
+
+// LOAD
+
+function loadSheet(nama, btn) {
+
+  document.getElementById("tabel").innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+
+
+
+  if (btn) {
+
+    document.querySelectorAll("#menu button").forEach(b => b.classList.remove("active"));
+
+    btn.classList.add("active");
+
+  }
+
+
+
+  fetch(`https://opensheet.elk.sh/${sheetID}/${nama}`)
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    currentData = data;
+
+    tampilkan(data);
+
+  })
+
+  .catch(() => {
+
+    document.getElementById("tabel").innerHTML = "<tr><td colspan='4'>Gagal load</td></tr>";
+
+  });
+
 }
 
-#menu button.active {
-  background: #007bff;
-  color: #fff;
-  border: none;
+
+
+// AUTO KOLOM
+
+function getVal(item, keys) {
+
+  for (let k in item) {
+
+    let key = k.toLowerCase();
+
+    for (let x of keys) {
+
+      if (key.includes(x)) return item[k];
+
+    }
+
+  }
+
+  return "";
+
 }
 
-/* ===== SEARCH (ROUNDED + STICKY) ===== */
-#search {
-  position: sticky;
-  top: 80px;
-  z-index: 20;
 
-  width: calc(100% - 20px);
-  margin: 10px;
 
-  padding: 12px 16px;
-  border-radius: 999px; /* FULL BULAT */
-  border: 1px solid #ddd;
+// TAMPILKAN
 
-  font-size: 14px;
-  outline: none;
+function tampilkan(data) {
 
-  background: #fff;
+  let html = "";
+
+
+
+  data.forEach(i => {
+
+    html += `<tr>
+
+      <td>${getVal(i, ["produk","nama"])}</td>
+
+      <td>${getVal(i, ["ukuran","ukuran"])}</td>
+
+      <td>${formatRupiah(getVal(i, ["harga"]))}</td>
+
+      <td>${getVal(i, ["satuan"])}</td>
+
+    </tr>`;
+
+  });
+
+
+
+  document.getElementById("tabel").innerHTML = html || "<tr><td colspan='4'>Kosong</td></tr>";
+
 }
 
-/* efek focus biar lebih modern */
-#search:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
+
+
+// FORMAT
+
+function formatRupiah(a) {
+
+  if (!a) return "";
+
+  a = String(a).replace(/[^0-9]/g, "");
+
+  return Number(a).toLocaleString("id-ID");
+
 }
 
-/* ===== TABLE ===== */
+
+
+// SEARCH
+
+document.getElementById("search").addEventListener("keyup", function() {
+
+  let k = this.value.toLowerCase();
+
+
+
+  let hasil = currentData.filter(i =>
+
+    getVal(i, ["produk","nama"]).toLowerCase().includes(k)
+
+  );
+
+
+
+  tampilkan(hasil);
+
+});
+
+</script>
+
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+untuk tampilan versi laptop / destop apakah produk, ukuran, harga satuan dibuat di tengah. jadi tampilan tdr 4 kolom tidak dibagi rata. sehingga kalo tampilan versi laptop / desktop lebih rapi ditengah
+
+Agar tampilan tabel di versi laptop/desktop terlihat rapi di tengah dan lebar kolomnya pas (tidak terbagi rata melebar memenuhi seluruh layar penampung), kita bisa membungkus atau mengatur wrapper tabelnya menggunakan CSS.
+
+Berikut adalah beberapa perbaikan CSS yang bisa Mbah tambahkan di file style.css untuk mencapai tampilan tersebut.
+
+Tambahan/Perubahan CSS (style.css)
+Mbah bisa tambahkan kode berikut di file CSS-nya. Kode ini menggunakan @media query khusus untuk layar komputer/laptop (min-width: 768px):
+
+CSS
+/* --- Pengaturan Default untuk Semua Ukuran Layar --- */
 .table-wrapper {
-  margin: 0 10px 15px;
-  background: #fff;
-  border-radius: 10px;
-  padding: 5px;
+  width: 100%;
+  overflow-x: auto; /* Biar tetap aman di HP kalau tabel kepotong */
 }
 
 table {
   width: 100%;
-  table-layout: auto;
   border-collapse: collapse;
 }
 
 th, td {
-  padding: 8px;
-  font-size: 13px;
-  word-break: break-word;
+  padding: 10px 15px;
+  text-align: left; /* Default teks rata kiri */
+}
+
+
+/* --- Pengaturan Khusus Versi Laptop / Desktop --- */
+@media screen and (min-width: 768px) {
+  
+  /* 1. Membuat tabel berada di tengah layar dan lebarnya proporsional */
+  .table-wrapper {
+    display: flex;
+    justify-content: center; /* Memposisikan tabel ke tengah */
+    margin: 20px 0;
+  }
+
+  table {
+    width: auto; /* Mengganti width 100% agar kolom tidak dipaksa bagi rata */
+    min-width: 600px; /* Lebar minimal tabel di desktop agar tidak terlalu sempit */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Opsional: biar estetis */
+  }
+
+  /* 2. Mengatur perataan teks di dalam kolom agar lebih rapi */
+  th, td {
+    text-align: center; /* Membuat isi kolom produk, ukuran, harga, satuan di tengah */
+    padding: 12px 25px; /* Memberi jarak/space yang longgar antar kolom */
+  }
+
+  /* Opsional: Jika Mbah ingin khusus kolom "Produk" tetap rata kiri (karena teksnya panjang) 
+     tapi kolom lainnya (Ukuran, Harga, Satuan) tetap di tengah, gunakan kode di bawah ini: */
+  /*
+  td:nth-child(1), th:nth-child(1) {
+    text-align: left;
+  }
+  */
+}
+Poin Penting Perubahannya:
+width: auto pada Desktop: Ini kunci utamanya. Di layar lebar, tabel tidak akan dipaksa melar memenuhi 100% layar komputer yang membuat kolomnya terbagi rata secara paksa. Ukuran kolom akan otomatis mengikuti panjang teks produk.
+
+display: flex; justify-content: center;: Dipasang pada .table-wrapper untuk menarik seluruh formasi tabel secara utuh ke posisi tengah-tengah monitor laptop.
+
+text-align: center;: Membuat semua baris data (Produk, Ukuran, Harga, Satuan) posisinya presisi di tengah-tengah kolomnya masing-masing.
+
+Tips Tambahan: Jika nama produknya panjang-panjang, teks yang berada di tengah kadang agak sedikit melelahkan dibaca. Jika ingin kolom produknya saja yang rata kiri sedangkan Ukuran, Harga, dan Satuan tetap di tengah, Mbah cukup aktifkan (hapus tanda komentarnya /* ... */) pada bagian paling bawah kode CSS di atas.
+
+tapi kalo versi layar hp gimana
+
+Tenang Mbah, aman. Kode CSS @media screen and (min-width: 768px) yang kita pakai di atas itu sifatnya responsif. Artinya, aturan di dalam kotak itu hanya akan berjalan di layar laptop/desktop (layar yang lebarnya minimal 768 pixel).
+
+Untuk layar HP (di bawah 768 pixel), tampilannya akan otomatis kembali ke pengaturan default yang penuh dan melebar sesuai lebar layar HP, sehingga tetap nyaman dibaca dan tidak kekecilan.
+
+Namun, biar di layar HP tampilannya jauh lebih rapi, tidak terlalu mepet ke pinggir layar, dan teksnya tetap enak dibaca (rata kiri), Mbah bisa sesuaikan struktur penuh style.css nya menjadi seperti ini:
+
+CSS
+/* =========================================================
+   1. PENGATURAN DEFAULT (Otomatis Berlaku untuk Layar HP)
+   ========================================================= */
+body {
+  margin: 10px;
+  font-family: sans-serif;
+}
+
+/* Biar tabel di HP bisa digeser (scroll) kanan-kiri kalau produknya kepanjangan */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto; 
+  -webkit-overflow-scrolling: touch; /* Biar scroll di HP mulus */
+  margin-top: 15px;
+}
+
+table {
+  width: 100%; /* Di HP, tabel wajib 100% biar memanfaatkan ruang layar yang sempit */
+  border-collapse: collapse;
+}
+
+/* Di HP, teks isi tabel lebih rapi rata kiri (left) agar tidak berantakan saat teksnya panjang */
+th, td {
+  padding: 10px 8px; /* Jarak padding agak rapat khas HP */
+  text-align: left;
+  border-bottom: 1px solid #ddd; /* Garis pembatas tipis biar rapi */
+  font-size: 14px; /* Ukuran font pas untuk HP */
 }
 
 th {
-  position: sticky;
-  top: 130px; /* SESUAI TOTAL HEADER ATAS */
-  z-index: 10;
-  background: #f1f3f4;
-}
-
-tr {
-  border-bottom: 1px solid #eee;
-}
-
-tr:last-child {
-  border-bottom: none;
-}
-
-/* ===== KOLOM ===== */
-td:nth-child(1) {
-  width: 50%;
-  font-weight: 600;
-  color: #000;
-}
-
-td:nth-child(2) {
-  text-align: center;
-}
-
-td:nth-child(3) {
-  white-space: nowrap;
-  text-align: right;
+  background-color: #f5f5f5;
   font-weight: bold;
-  color: #0a7d2c;
 }
 
-td:nth-child(4) {
-  text-align: center;
-}
 
-tr:hover {
-  background: #eef7ff;
-}
+/* =========================================================
+   2. PENGATURAN KHUSUS LAPTOP / DESKTOP (Layar > 768px)
+   ========================================================= */
+@media screen and (min-width: 768px) {
+  
+  body {
+    margin: 20px auto;
+    max-width: 1200px; /* Membatasi lebar konten biar gak melar banget */
+  }
 
-/* ===== LOGIN ===== */
-#loginBox {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-}
+  /* Membuat tabel berada di tengah layar desktop */
+  .table-wrapper {
+    display: flex;
+    justify-content: center; 
+    margin: 20px 0;
+  }
 
-.login-card {
-  width: 260px;
-  padding: 20px;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
+  table {
+    width: auto; /* Kolom tidak dipaksa bagi rata, melainkan mengikuti isi teks */
+    min-width: 600px; /* Lebar minimal tabel di desktop */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Efek bayangan biar premium */
+  }
 
-.login-card h3 {
-  margin-top: 0;
-}
+  /* Di desktop, semua teks kolom otomatis pindah ke tengah */
+  th, td {
+    text-align: center; 
+    padding: 12px 25px; /* Jarak antar kolom lebih longgar dan lega */
+    font-size: 16px; /* Font lebih besar sedikit untuk desktop */
+  }
 
-.login-card input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  /* REKOMENDASI: Khusus kolom ke-1 (Produk) tetep rata kiri di desktop biar rapi, 
+     sedangkan Ukuran, Harga, Satuan tetep di tengah */
+  td:nth-child(1), th:nth-child(1) {
+    text-align: left;
+  }
 }
+Ringkasan Hasilnya Nanti:
+Di HP: Tabel otomatis melebar penuh 100% layar HP, teksnya rata kiri (memudahkan sales membaca nama produk yang panjang), dan aman dari layout rusak karena kalau ukuran barangnya kepanjangan, tabelnya bisa digeser (di-scroll) ke kanan-kiri.
 
-.login-card button {
-  width: 100%;
-  padding: 10px;
-  background: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
+Di Laptop: Tabel otomatis mengkerut rapi di tengah layar, tidak melar maksa, jarak antar kolomnya longgar, dan posisi angkanya presisi di tengah (kecuali nama produk yang tetap rata kiri agar strukturnya enak dilihat). Mbah tinggal copy-paste kode di atas ke file style.css nya.
 
-/* ===== LOCK ===== */
-body.lock > *:not(#loginBox) {
-  display: none;
-}
+css yg ada sekarang
 
-body.lock {
-  overflow: hidden;
-}
+
+
+/* ===== GLOBAL ===== */
+
+* { box-sizing: border-box; }
+
+
 
 body {
-  padding-bottom: 30px;
+
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 14px;
+
+  background: #f4f6f8;
+
 }
 
 
+
+/* ===== TITLE ===== */
+
+h1 {
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 30;
+
+  background: #f4f6f8;
+
+
+
+  text-align: center; /* center */
+
+  margin: 10px 0;
+
+}
+
+
+
+h3.warning {
+
+  position: fixed;
+
+  bottom: 0;
+
+  left: 0;
+
+  width: 100%;
+
+
+
+  text-align: center;
+
+  font-size: 11px;       /* lebih kecil */
+
+  color: #d93025;
+
+
+
+  background: #fff;
+
+  padding: 6px 0;
+
+  margin: 0;
+
+
+
+  z-index: 999;
+
+  
+
+  animation: blink 1s infinite;
+
+}
+
+@keyframes blink {
+
+  0%   { opacity: 1; }
+
+  50%  { opacity: 0.2; }
+
+  100% { opacity: 1; }
+
+}
+
+/* ===== MENU ===== */
+
+#menu {
+
+  position: sticky;
+
+  top: 40px;
+
+  z-index: 25;
+
+  background: #f4f6f8;
+
+
+
+  display: flex;
+
+  gap: 8px;
+
+  overflow-x: auto;
+
+  padding: 5px 10px;
+
+}
+
+
+
+#menu button {
+
+  flex: 0 0 auto;
+
+  padding: 8px 14px;
+
+  border: 1px solid #ddd;
+
+  background: #fff;
+
+  border-radius: 20px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+}
+
+
+
+#menu button.active {
+
+  background: #007bff;
+
+  color: #fff;
+
+  border: none;
+
+}
+
+
+
+/* ===== SEARCH (ROUNDED + STICKY) ===== */
+
+#search {
+
+  position: sticky;
+
+  top: 80px;
+
+  z-index: 20;
+
+
+
+  width: calc(100% - 20px);
+
+  margin: 10px;
+
+
+
+  padding: 12px 16px;
+
+  border-radius: 999px; /* FULL BULAT */
+
+  border: 1px solid #ddd;
+
+
+
+  font-size: 14px;
+
+  outline: none;
+
+
+
+  background: #fff;
+
+}
+
+
+
+/* efek focus biar lebih modern */
+
+#search:focus {
+
+  border-color: #007bff;
+
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
+
+}
+
+
+
+/* ===== TABLE ===== */
+
+.table-wrapper {
+
+  margin: 0 10px 15px;
+
+  background: #fff;
+
+  border-radius: 10px;
+
+  padding: 5px;
+
+}
+
+
+
+table {
+
+  width: 100%;
+
+  table-layout: auto;
+
+  border-collapse: collapse;
+
+}
+
+
+
+th, td {
+
+  padding: 8px;
+
+  font-size: 13px;
+
+  word-break: break-word;
+
+}
+
+
+
+th {
+
+  position: sticky;
+
+  top: 130px; /* SESUAI TOTAL HEADER ATAS */
+
+  z-index: 10;
+
+  background: #f1f3f4;
+
+}
+
+
+
+tr {
+
+  border-bottom: 1px solid #eee;
+
+}
+
+
+
+tr:last-child {
+
+  border-bottom: none;
+
+}
+
+
+
+/* ===== KOLOM ===== */
+
+td:nth-child(1) {
+
+  width: 50%;
+
+  font-weight: 600;
+
+  color: #000;
+
+}
+
+
+
+td:nth-child(2) {
+
+  text-align: center;
+
+}
+
+
+
+td:nth-child(3) {
+
+  white-space: nowrap;
+
+  text-align: right;
+
+  font-weight: bold;
+
+  color: #0a7d2c;
+
+}
+
+
+
+td:nth-child(4) {
+
+  text-align: center;
+
+}
+
+
+
+tr:hover {
+
+  background: #eef7ff;
+
+}
+
+
+
+/* ===== LOGIN ===== */
+
+#loginBox {
+
+  position: fixed;
+
+  top: 0;
+
+  left: 0;
+
+  width: 100vw;
+
+  height: 100vh;
+
+  background: #ffffff;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  z-index: 99999;
+
+}
+
+
+
+.login-card {
+
+  width: 260px;
+
+  padding: 20px;
+
+  border-radius: 10px;
+
+  background: #fff;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+}
+
+
+
+.login-card h3 {
+
+  margin-top: 0;
+
+}
+
+
+
+.login-card input {
+
+  width: 100%;
+
+  padding: 8px;
+
+  margin-bottom: 10px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 6px;
+
+}
+
+
+
+.login-card button {
+
+  width: 100%;
+
+  padding: 10px;
+
+  background: #007bff;
+
+  color: #fff;
+
+  border: none;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+}
+
+
+
+/* ===== LOCK ===== */
+
+body.lock > *:not(#loginBox) {
+
+  display: none;
+
+}
+
+
+
+body.lock {
+
+  overflow: hidden;
+
+}
+
+
+
+body {
+
+  padding-bottom: 30px;
+
+}
+
+
+
+penggantian nya dimana 
+
+Mbah, melihat CSS asli yang Mbah pakai, di sana sudah ada pengaturan lebar manual untuk versi HP (seperti td:nth-child(1) { width: 50%; }, harga rata kanan, dll).
+
+Agar di HP tampilannya tetap persis seperti sekarang, sedangkan di laptop/desktop otomatis berubah ke tengah, kolomnya pas (tidak melar), dan semua teks kolomnya rapi di tengah, Mbah cukup menambahkan @media screen and (min-width: 768px) di bagian paling bawah file CSS.
+
+Silakan copy kode di bawah ini, lalu tempel (paste) di baris paling akhir file style.css Mbah:
+
+CSS
 /* =========================================================
    TAMBAHAN KHUSUS UNTUK TAMPILAN LAPTOP / DESKTOP
    (Tempel di bagian paling bawah file style.css)
@@ -262,3 +995,361 @@ body {
     text-align: center; /* Mengubah harga yang tadinya rata kanan jadi rata tengah */
   }
 }
+Apa saja yang berubah dengan cara ini?
+Di HP: CSS lama Mbah tetap bekerja 100%. Produk tetap mengambil porsi lebar 50%, harga tetap rata kanan (text-align: right), dan pas di layar HP.
+
+Di Laptop: Begitu layar menyentuh lebar 768px ke atas, kode tambahan di atas akan aktif. Tabel langsung mengkerut rapi di tengah halaman, kolomnya melebar proporsional mengikuti teks, dan seluruh data (termasuk nama produk dan harga) posisinya presisi rata tengah.
+
+apakh berlaku tampilan semua, termasuk pilihan menu produk
+
+Kode tambahan yang saya berikan sebelumnya baru mengatur tabelnya saja, Mbah. Tombol menu kategori dan kolom pencarian (search) di atasnya belum ikut masuk ke tengah, jadi di laptop posisinya masih akan melebar penuh dari ujung kiri ke ujung kanan layar.
+
+Agar tampilannya serasi dan rapi (Menu, Kolom Cari, dan Tabel semuanya ikut mengumpul di tengah saat dibuka di laptop), Mbah perlu menambahkan sedikit aturan untuk #menu dan #search.
+
+Silakan gunakan kode di bawah ini untuk menggantikan kode @media yang saya berikan sebelumnya. Tempelkan ini di baris paling bawah file style.css Mbah:
+
+CSS
+/* =========================================================
+   TAMBAHAN UTK DESKTOP (MENU, SEARCH, & TABEL JADI DI TENGAH)
+   (Tempel di bagian paling bawah file style.css)
+   ========================================================= */
+@media screen and (min-width: 768px) {
+  
+  /* 1. Mengatur Judul, Menu, dan Kolom Search agar lebarnya pas di tengah */
+  h1, #menu, #search {
+    max-width: 800px; /* Membatasi lebar maksimal */
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* 2. Merapikan barisan tombol menu di desktop */
+  #menu {
+    justify-content: center; /* Membuat tombol menu ngumpul di tengah */
+    overflow-x: visible;     /* Di laptop tidak perlu scroll kanan-kiri lagi */
+    flex-wrap: wrap;         /* Kalau menu terlalu banyak, otomatis turun ke bawahnya */
+    padding: 10px 0;
+  }
+
+  /* 3. Menyesuaikan lebar kolom pencarian biar pas */
+  #search {
+    width: calc(100% - 40px); /* Memberi sedikit jarak manis di kanan-kiri */
+  }
+
+  /* 4. Membuat wrapper tabel berada di tengah layar laptop */
+  .table-wrapper {
+    display: flex;
+    justify-content: center;
+    background: transparent; /* Menghilangkan background putih wrapper bawaan HP */
+    margin: 20px auto 40px;
+    max-width: 1000px;
+  }
+
+  /* 5. Mengatur ukuran tabel di desktop agar tidak melar penuh */
+  table {
+    width: auto; /* Lebar otomatis mengikuti panjang isi teks */
+    min-width: 750px; /* Lebar minimal tabel di laptop biar ideal */
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Efek bayangan halus */
+    overflow: hidden;
+  }
+
+  /* 6. Menghapus paksaan lebar 50% kolom produk khusus di laptop */
+  td:nth-child(1) {
+    width: auto; 
+    text-align: center; /* Membuat teks Produk berada di tengah */
+  }
+
+  /* 7. Membuat semua isi kolom (Ukuran, Harga, Satuan) rata tengah */
+  th, td {
+    padding: 12px 30px; /* Jarak antar kolom lebih longgar dan lega */
+    font-size: 14px;
+  }
+
+  th {
+    text-align: center; /* Judul kolom di tengah */
+  }
+
+  td:nth-child(2), 
+  td:nth-child(3), 
+  td:nth-child(4) {
+    text-align: center; /* Mengubah harga yang tadinya rata kanan jadi rata tengah */
+  }
+}
+Hasilnya Setelah Diganti:
+Di HP: Tampilan tetap bawaan asli Mbah (Menu bisa di-scroll kanan-kiri, pencarian penuh, tabel rata kanan-kiri sesuai setelan awal).
+
+Di Laptop/Desktop: Tombol pilihan kategori menu akan langsung berbaris rapi di tengah. Kolom cari (search) ikut mengecil proporsional di tengah, dan tabel berada tepat di bawahnya dengan formasi rata tengah yang simetris. Tampilan jadi terlihat seperti aplikasi desktop profesional, Mbah.
+
+untuk layar versi laptop/desktop masih belu berubah... masih melebar
+
+Jika tampilannya masih belum berubah atau tetap melebar di laptop, biasanya ada dua kemungkinan penyebab utamanya, Mbah:
+
+Bentrok dengan kode lama (width: 100%) yang ada di bagian atas CSS Mbah.
+
+Masalah Cache Browser, yaitu laptop Mbah masih menyimpan data CSS yang lama, jadi perubahan barunya belum kelihatan.
+
+Mari kita bereskan dengan cara yang lebih kuat (force). Kita akan menggabungkan semuanya ke dalam satu kesatuan CSS agar tidak ada kode yang saling tabrakan.
+
+Silakan hapus semua kode CSS lama Mbah di style.css, lalu ganti total dengan seluruh kode di bawah ini:
+
+CSS
+/* ===== GLOBAL ===== */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background: #f4f6f8;
+  padding-bottom: 30px;
+}
+
+/* ===== TITLE ===== */
+h1 {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #f4f6f8;
+  text-align: center;
+  margin: 10px 0;
+}
+
+h3.warning {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 11px;
+  color: #d93025;
+  background: #fff;
+  padding: 6px 0;
+  margin: 0;
+  z-index: 999;
+  animation: blink 1s infinite;
+}
+@keyframes blink {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+/* ===== MENU ===== */
+#menu {
+  position: sticky;
+  top: 40px;
+  z-index: 25;
+  background: #f4f6f8;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 5px 10px;
+}
+
+#menu button {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+#menu button.active {
+  background: #007bff;
+  color: #fff;
+  border: none;
+}
+
+/* ===== SEARCH ===== */
+#search {
+  position: sticky;
+  top: 80px;
+  z-index: 20;
+  width: calc(100% - 20px);
+  margin: 10px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+}
+
+#search:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
+}
+
+/* ===== TABLE (Tampilan Default / HP) ===== */
+.table-wrapper {
+  margin: 0 10px 15px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+table {
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+th {
+  position: sticky;
+  top: 130px;
+  z-index: 10;
+  background: #f1f3f4;
+}
+
+tr {
+  border-bottom: 1px solid #eee;
+}
+
+tr:last-child {
+  border-bottom: none;
+}
+
+/* Kolom HP */
+td:nth-child(1) {
+  width: 50%;
+  font-weight: 600;
+  color: #000;
+}
+td:nth-child(2) { text-align: center; }
+td:nth-child(3) {
+  white-space: nowrap;
+  text-align: right;
+  font-weight: bold;
+  color: #0a7d2c;
+}
+td:nth-child(4) { text-align: center; }
+
+tr:hover { background: #eef7ff; }
+
+/* ===== LOGIN ===== */
+#loginBox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.login-card {
+  width: 260px;
+  padding: 20px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.login-card h3 { margin-top: 0; }
+.login-card input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+.login-card button {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+body.lock > *:not(#loginBox) { display: none; }
+body.lock { overflow: hidden; }
+
+
+/* =========================================================
+   PENGATURAN KHUSUS LAPTOP / DESKTOP (Layar > 768px)
+   ========================================================= */
+@media screen and (min-width: 768px) {
+  
+  /* Membikin Judul, Menu, dan Search Terkumpul di Tengah */
+  h1, #menu, #search {
+    max-width: 800px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  #menu {
+    justify-content: center !important;
+    overflow-x: visible !important;
+    flex-wrap: wrap !important;
+    padding: 10px 0;
+  }
+
+  #search {
+    width: calc(100% - 40px) !important;
+  }
+
+  /* Membikin Kontainer Tabel Berada di Tengah */
+  .table-wrapper {
+    display: flex !important;
+    justify-content: center !important;
+    background: transparent !important; /* Menghapus background putih bawaan HP */
+    margin: 20px auto 40px !important;
+    max-width: 1000px !important;
+    padding: 0 !important;
+  }
+
+  /* Mengatur Tabel agar TIDAK MELEBAR (Width Auto) */
+  table {
+    width: auto !important; 
+    min-width: 750px !important; /* Lebar minimal tabel di laptop */
+    background: #fff !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+    overflow: hidden !important;
+  }
+
+  /* Mengatur Kolom & Teks Kembali ke Tengah */
+  th, td {
+    padding: 12px 30px !important; /* Jarak kolom dibuat longgar */
+    font-size: 14px !important;
+    text-align: center !important; /* Semua teks default tengah */
+  }
+
+  /* Reset paksaan lebar 50% milik HP */
+  td:nth-child(1) {
+    width: auto !important; 
+    text-align: center !important;
+  }
+
+  td:nth-child(3) {
+    text-align: center !important; /* Harga jadi di tengah */
+  }
+}
+Langkah Wajib Setelah Ganti Kode:
+Setelah Mbah simpan (save) kode di atas, lakukan Hard Refresh di browser laptop Mbah untuk membuang sisa cache yang macet:
+
+Jika pakai Google Chrome / Edge (Windows): Tekan tombol Ctrl + F5 secara bersamaan.
+
+Jika pakai Macbook / Safari: Tekan tombol Cmd + Shift + R.
+
+Dengan menambahkan tanda !important pada versi desktop di atas, laptop akan dipaksa mengabaikan aturan lama dan wajib menerapkan tampilan tengah yang rapi, Mbah. Silakan dicoba dulu.
+
+
+
+
+Gemini adalah AI dan dapat melakukan kesalahan.
+
