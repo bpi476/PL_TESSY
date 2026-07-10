@@ -1,44 +1,34 @@
 /* ===== GLOBAL ===== */
-
 * { box-sizing: border-box; }
-
-
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   font-size: 14px;
   background: #f4f6f8;
+  /* Tambahkan padding atas agar konten tabel tidak tertutup oleh header yang di-fixed */
+  padding-top: 195px; 
+  padding-bottom: 30px;
 }
 
-
-
-/* ===== TITLE ===== */
-
-h1 {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  background: #f4f6f8;
-  text-align: center; /* center */
-  margin: 10px 0;
-}
-
-
+/* ===== CONTAINER HEADER FIXED ===== 
+   Kita bungkus atau buat elemen atas tetap solid di posisinya 
+================================== */
 
 h3.warning {
   position: fixed;
-  top: 20;
+  top: 0;
   left: 0;
   width: 100%;
   text-align: center;
-  font-size: 11px;       /* lebih kecil */
+  font-size: 11px;
   color: #d93025;
-  background: #fff;
+  background: #ffffff; /* Putih Solid */
   padding: 6px 0;
   margin: 0;
-  z-index: 999;
+  z-index: 1000; /* Paling atas */
   animation: blink 1s infinite;
+  border-bottom: 1px solid #eee;
 }
 
 @keyframes blink {
@@ -47,21 +37,32 @@ h3.warning {
   100% { opacity: 1; }
 }
 
+h1 {
+  position: fixed;
+  top: 25px; /* Di bawah h3.warning */
+  left: 0;
+  width: 100%;
+  z-index: 990;
+  background: #ffffff; /* Putih Solid */
+  text-align: center;
+  margin: 0;
+  padding: 10px 0;
+}
+
 /* ===== MENU ===== */
-
 #menu {
-
-  position: sticky;
-  top: 40px;
-  z-index: 25;
-  background: #f4f6f8;
+  position: fixed;
+  top: 75px; /* Di bawah h1 */
+  left: 0;
+  width: 100%;
+  z-index: 980;
+  background: #ffffff; /* Putih Solid */
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 5px 10px;
+  padding: 10px;
+  margin: 0;
 }
-
-
 
 #menu button {
   flex: 0 0 auto;
@@ -73,45 +74,35 @@ h3.warning {
   cursor: pointer;
 }
 
-
-
 #menu button.active {
   background: #007bff;
   color: #fff;
   border: none;
 }
 
-
-
-/* ===== SEARCH (ROUNDED + STICKY) ===== */
-
+/* ===== SEARCH ===== */
 #search {
-  position: sticky;
-  top: 80px;
-  z-index: 20;
+  position: fixed;
+  top: 130px; /* Di bawah #menu */
+  left: 10px;
+  z-index: 970;
   width: calc(100% - 20px);
-  margin: 10px;
+  margin: 0;
   padding: 12px 16px;
-  border-radius: 999px; /* FULL BULAT */
+  border-radius: 999px;
   border: 1px solid #ddd;
   font-size: 14px;
   outline: none;
-  background: #fff;
+  background: #ffffff; /* Putih Solid */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sedikit shadow agar terpisah dari background aplikasi */
 }
-
-
-
-/* efek focus biar lebih modern */
 
 #search:focus {
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
 }
 
-
-
 /* ===== TABLE ===== */
-
 .table-wrapper {
   margin: 0 10px 15px;
   background: #fff;
@@ -119,63 +110,43 @@ h3.warning {
   padding: 5px;
 }
 
-
-
 table {
   width: 100%;
   table-layout: auto;
   border-collapse: collapse;
 }
 
-
-
 th, td {
   padding: 8px;
   font-size: 13px;
   word-break: break-word;
-
 }
-
-
 
 th {
-
   position: sticky;
-  top: 130px; /* SESUAI TOTAL HEADER ATAS */
-  z-index: 10;
+  top: 185px; /* Menyesuaikan batas bawah form search agar sticky tepat di bawahnya */
+  z-index: 90;
   background: #f1f3f4;
-
 }
-
-
 
 tr {
   border-bottom: 1px solid #eee;
 }
 
-
-
 tr:last-child {
   border-bottom: none;
 }
 
-
-
 /* ===== KOLOM ===== */
-
 td:nth-child(1) {
   width: 50%;
   font-weight: 600;
   color: #000;
 }
 
-
-
 td:nth-child(2) {
   text-align: center;
 }
-
-
 
 td:nth-child(3) {
   white-space: nowrap;
@@ -184,24 +155,16 @@ td:nth-child(3) {
   color: #0a7d2c;
 }
 
-
-
 td:nth-child(4) {
   text-align: center;
 }
-
-
 
 tr:hover {
   background: #eef7ff;
 }
 
-
-
 /* ===== LOGIN ===== */
-
 #loginBox {
-
   position: fixed;
   top: 0;
   left: 0;
@@ -212,28 +175,19 @@ tr:hover {
   justify-content: center;
   align-items: center;
   z-index: 99999;
-
 }
 
-
-
 .login-card {
-
   width: 260px;
   padding: 20px;
   border-radius: 10px;
   background: #fff;
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-
 }
-
-
 
 .login-card h3 {
   margin-top: 0;
 }
-
-
 
 .login-card input {
   width: 100%;
@@ -243,10 +197,7 @@ tr:hover {
   border-radius: 6px;
 }
 
-
-
 .login-card button {
-
   width: 100%;
   padding: 10px;
   background: #007bff;
@@ -254,25 +205,13 @@ tr:hover {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-
 }
 
-
-
 /* ===== LOCK ===== */
-
 body.lock > *:not(#loginBox) {
   display: none;
 }
 
-
-
 body.lock {
   overflow: hidden;
-}
-
-
-
-body {
-  padding-bottom: 30px;
 }
