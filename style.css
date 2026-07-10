@@ -7,63 +7,76 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   font-size: 14px;
-  background: #f4f6f8;
-  /* Jarak pas agar isi tabel tidak tertutup total di awal */
-  padding-top: 195px; 
+  background: #f4f6f8; /* Warna abu-abu di area luar/tepi desktop */
   padding-bottom: 30px;
 }
 
-/* ===== FIXING ALL LEAKS (PENUTUP CELAH BOCOR) ===== */
+/* ===== CONTAINER UTAMA (BENTENG TENGAH) =====
+   Membuat semua konten mengumpul di tengah saat layar lebar
+================================================== */
+.app-container {
+  max-width: 600px; /* Batas lebar maksimal di desktop (bisa diganti ke 700px jika kurang lebar) */
+  margin: 0 auto;   /* Memaksa container berada di tengah-tengah layar */
+  background: #ffffff; /* Mengubah background dalam menjadi putih murni */
+  min-height: 100vh;
+  position: relative;
+  padding-top: 195px; /* Jarak agar isi tabel tidak tertutup header */
+}
+
+/* ===== FIXING ALL FIXED ELEMENTS FOR DESKTOP ===== */
 
 h3.warning {
   position: fixed;
   top: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
+  max-width: 600px; /* Mengikuti lebar container utama */
   text-align: center;
   font-size: 11px;
-  background: #ffffff; /* Tetap putih solid, tidak akan ikut transparan */
+  background: #ffffff;
   padding: 6px 0;
   margin: 0;
   z-index: 1000;
   box-shadow: 0 5px 0 #ffffff; 
-  /* Animasi sekarang fokus mengubah warna teks saja */
   animation: blink 1s infinite;
 }
 
 @keyframes blink {
-  0%   { color: #d93025; }             /* Merah tegas */
-  50%  { color: rgba(217, 48, 37, 0.2); } /* Merah pudar (teksnya saja) */
-  100% { color: #d93025; }             /* Merah tegas kembali */
+  0%   { color: #d93025; }
+  50%  { color: rgba(217, 48, 37, 0.2); }
+  100% { color: #d93025; }
 }
 
 h1 {
   position: fixed;
   top: 23px; 
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
+  max-width: 600px;
   z-index: 990;
   background: #ffffff;
   text-align: center;
   margin: 0;
   padding: 10px 0;
-  /* Shadow atas bawah untuk membentengi area H1 */
   box-shadow: 0 -5px 0 #ffffff, 0 5px 0 #ffffff;
 }
 
 #menu {
   position: fixed;
   top: 67px; 
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
+  max-width: 600px;
   z-index: 980;
   background: #ffffff;
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 12px 10px; /* Dipertebal sedikit */
+  padding: 12px 10px;
   margin: 0;
-  /* Menghilangkan celah ke bawah menuju searching */
   box-shadow: 0 8px 0 #ffffff; 
 }
 
@@ -86,24 +99,23 @@ h1 {
 #search {
   position: fixed;
   top: 125px; 
-  left: 10px;
-  /* Lebar disesuaikan agar tetap rounded tapi dipaksa punya background block */
+  left: 50%;
+  transform: translateX(-50%);
   width: calc(100% - 20px);
+  max-width: 580px; /* Dikurangi sedikit dari 600px agar ada jarak 10px kanan-kiri */
   z-index: 970;
   margin: 0;
   padding: 12px 16px;
-  border-radius: 999px; /* Kembali bulat penuh sesuai request awal */
+  border-radius: 999px; 
   border: 1px solid #ddd;
   font-size: 14px;
   outline: none;
   background: #ffffff;
-  /* TRICK: Gunakan shadow putih menyebar (spread) untuk memblokir celah di luar bulatan search */
   box-shadow: 0 0 0 12px #ffffff; 
 }
 
 #search:focus {
   border-color: #007bff;
-  /* Tetap mempertahankan tameng putih ditambah efek focus biru */
   box-shadow: 0 0 0 12px #ffffff, 0 0 0 14px rgba(0,123,255,0.2);
 }
 
@@ -130,7 +142,6 @@ th, td {
 
 th {
   position: sticky;
-  /* Diturunkan pas ke posisi setelah benteng putih #search */
   top: 178px; 
   z-index: 900; 
   background: #f1f3f4; 
